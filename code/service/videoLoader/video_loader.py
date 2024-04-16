@@ -202,7 +202,7 @@ class VideoLoader(Executor):
                 ffmpeg.input(source_fn)
                 .output('pipe:', **ffmpeg_args)
                 .run(capture_stdout=True, quiet=True)
-            )  # 提取每个秒间隔的第一帧 ToDo 提取最清晰的帧？其他类型的帧？1s或者0.1s
+            )  # 提取每个秒间隔的第一帧 ToDo 提取最清晰的帧？其他类型的帧？1s或者0.1s 5s加上转场截取？
             # w = math.ceil(w / 1)
             # h = math.ceil(h / 1)
             # img = Image.frombuffer("RGB", (w, h), out)
