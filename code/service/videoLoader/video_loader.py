@@ -37,14 +37,14 @@ class VideoLoader(Executor):
     """
 
     def __init__(
-        self,
-        modality_list: Iterable[str] = ('image', 'audio', 'text'),
-        ffmpeg_video_args: Optional[Dict] = None,
-        ffmpeg_audio_args: Optional[Dict] = None,
-        ffmpeg_subtitle_args: Optional[Dict] = None,
-        librosa_load_args: Optional[Dict] = None,
-        copy_uri: bool = True,
-        **kwargs,
+            self,
+            modality_list: Iterable[str] = ('image', 'audio', 'text'),
+            ffmpeg_video_args: Optional[Dict] = None,
+            ffmpeg_audio_args: Optional[Dict] = None,
+            ffmpeg_subtitle_args: Optional[Dict] = None,
+            librosa_load_args: Optional[Dict] = None,
+            copy_uri: bool = True,
+            **kwargs,
     ):
         """
         :param modality_list: the data from different modalities to be extracted. By default,
@@ -104,6 +104,7 @@ class VideoLoader(Executor):
         Possible values are `ffmpeg_audio_args`, `ffmpeg_video_args`, `librosa_load_args`. Check out more description in the `__init__()`.
         For example, `parameters={'ffmpeg_video_args': {'s': '512x320'}`.
         """
+        # todo 视频检测结果
         t1 = time.time()
         print('video_loader extract', t1)
         for doc in docs:
@@ -206,7 +207,7 @@ class VideoLoader(Executor):
             # h = math.ceil(h / 1)
             # img = Image.frombuffer("RGB", (w, h), out)
             # print(img.size)
-            video_frames = np.frombuffer(out, np.uint8) #.reshape([-1, h, w, 3])
+            video_frames = np.frombuffer(out, np.uint8)  # .reshape([-1, h, w, 3])
             # print(video_frames.shape)
             video_frames = video_frames.reshape([-1, h, w, 3])
             # img = Image.fromarray(video_frames)
@@ -269,7 +270,7 @@ class VideoLoader(Executor):
         return tmp_fn
 
     def _process_subtitles(
-        self, srt_path: Path, vtt_path: Path = None, tmp_srt_path: Path = None
+            self, srt_path: Path, vtt_path: Path = None, tmp_srt_path: Path = None
     ):
         beg = None
         is_last_cap_complete = True
@@ -321,7 +322,7 @@ class VideoLoader(Executor):
         return output_path
 
     def _convert_srt_to_vtt(
-        self, srt_path: Path, vtt_path: Path = None, tmp_srt_path: Path = None
+            self, srt_path: Path, vtt_path: Path = None, tmp_srt_path: Path = None
     ):
         if vtt_path is None:
             vtt_path = srt_path.parent / f'{srt_path.stem}.vtt'
