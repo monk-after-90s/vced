@@ -104,7 +104,7 @@ class VideoLoader(Executor):
         Possible values are `ffmpeg_audio_args`, `ffmpeg_video_args`, `librosa_load_args`. Check out more description in the `__init__()`.
         For example, `parameters={'ffmpeg_video_args': {'s': '512x320'}`.
         """
-        # todo 视频检测结果
+        # todo 视频检测的文本结果
         t1 = time.time()
         print('video_loader extract', t1)
         for doc in docs:
