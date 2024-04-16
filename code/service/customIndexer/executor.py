@@ -21,14 +21,14 @@ class SimpleIndexer(Executor):
     FILE_NAME = 'index.db'
 
     def __init__(
-        self,
-        pretrained_model_name_or_path: str = 'ViT-B/32',
-        match_args: Optional[Dict] = None,
-        table_name: str = 'simple_indexer_table2',
-        traversal_right: str = '@r',
-        traversal_left: str = '@r',
-        device: str = 'cpu',
-        **kwargs,
+            self,
+            pretrained_model_name_or_path: str = 'ViT-B/32',
+            match_args: Optional[Dict] = None,
+            table_name: str = 'simple_indexer_table2',
+            traversal_right: str = '@r',
+            traversal_left: str = '@r',
+            device: str = 'cpu',
+            **kwargs,
     ):
         """
         Initializer function for the simple indexer
@@ -59,8 +59,8 @@ class SimpleIndexer(Executor):
 
         self.device = device
 
-        model, preprocessor = clip.load(self.pretrained_model_name_or_path, device="cpu")   # No need to load on cuda
-        
+        model, preprocessor = clip.load(self.pretrained_model_name_or_path, device="cpu")  # No need to load on cuda
+
         self.preprocessor = preprocessor
         self.model = model
 
@@ -70,9 +70,9 @@ class SimpleIndexer(Executor):
 
     @requests(on='/index')
     def index(
-        self,
-        docs: 'DocumentArray',
-        **kwargs,
+            self,
+            docs: 'DocumentArray',
+            **kwargs,
     ):
         """All Documents to the DocumentArray
         :param docs: the docs to add
@@ -87,10 +87,10 @@ class SimpleIndexer(Executor):
 
     @requests(on='/search')
     def search(
-        self,
-        docs: 'DocumentArray',
-        parameters: Optional[Dict] = None,
-        **kwargs,
+            self,
+            docs: 'DocumentArray',
+            parameters: Optional[Dict] = None,
+            **kwargs,
     ):
         """Perform a vector similarity search and retrieve the full Document match
 
@@ -98,17 +98,17 @@ class SimpleIndexer(Executor):
         :param parameters: the runtime arguments to `DocumentArray`'s match
         function. They overwrite the original match_args arguments.
         """
-        match_args = (
-            {**self._match_args, **parameters}
-            if parameters is not None
-            else self._match_args
-        )
+        # match_args = (
+        #     {**self._match_args, **parameters}
+        #     if parameters is not None
+        #     else self._match_args
+        # )
 
         traversal_right = parameters.get(
             'traversal_right', self.default_traversal_right
         )
         traversal_left = parameters.get('traversal_left', self.default_traversal_left)
-        match_args = SimpleIndexer._filter_match_params(docs, match_args)
+        # match_args = SimpleIndexer._filter_match_params(docs, match_args)
         # print('in indexer',docs[traversal_left].embeddings.shape, self._index[traversal_right])
         texts: DocumentArray = docs[traversal_left]
         stored_docs: DocumentArray = self._index[traversal_right]
@@ -125,7 +125,7 @@ class SimpleIndexer(Executor):
                     if doc_ids is not None and sd.uri not in doc_ids:
                         continue
                     images_features = sd.embedding
-                    print('images len',len(images_features))
+                    print('images len', len(images_features))
                     t1_0 = time.time()
                     tensor_images_features = [Tensor(image_features) for image_features in images_features]
                     t1_1 = time.time()
@@ -147,7 +147,9 @@ class SimpleIndexer(Executor):
                 t2 = time.time()
                 print('score cost:', t2 - t1)
                 # print(parameters, type(parameters.get("thod")))
-                index_list = self.getMultiRange(result,0.1 if parameters.get("thod") is None else parameters.get('thod'), parameters.get("maxCount"))
+                index_list = self.getMultiRange(result,
+                                                0.1 if parameters.get("thod") is None else parameters.get('thod'),
+                                                parameters.get("maxCount"))
                 t3 = time.time()
                 print('range cost:', t3 - t2)
                 print(t1)
@@ -166,7 +168,7 @@ class SimpleIndexer(Executor):
                 # print(docArr)
                 text.matches = docArr
 
-    def getMultiRange(self, result: list, thod = 0.1, maxCount: int = 10):
+    def getMultiRange(self, result: list, thod=0.1, maxCount: int = 10):
         ignore_range = {}
         index_list = []
         maxCount = int(maxCount)
@@ -198,8 +200,8 @@ class SimpleIndexer(Executor):
             if item["score"] > maxItem["score"]:
                 maxItem = item
         return maxItem
-    
-    def getRange(self, maxItem, result: list, thod = 0.1, ignore_range = None):
+
+    def getRange(self, maxItem, result: list, thod=0.1, ignore_range=None):
         maxImageScore = maxItem["score"]
         maxImageUri = maxItem["uri"]
         maxIndex = maxItem["index"]
@@ -218,7 +220,7 @@ class SimpleIndexer(Executor):
             else:
                 break
 
-        for i in range(maxIndex+1, len(d_result)):
+        for i in range(maxIndex + 1, len(d_result)):
             if has_ignore_range and i in ignore_range:
                 break
             if d_result[i]["score"] >= maxImageScore - thod:
@@ -226,7 +228,7 @@ class SimpleIndexer(Executor):
             else:
                 break
         if (rightIndex - leftIndex) > 60:
-            return self.getRange(maxItem, result, thod/2, ignore_range)
+            return self.getRange(maxItem, result, thod / 2, ignore_range)
         return leftIndex, max(rightIndex, leftIndex + 10), d_result[maxIndex]
 
     def score(self, image_features, text_features):
@@ -237,7 +239,7 @@ class SimpleIndexer(Executor):
         text_features = text_features / text_features.norm(dim=1, keepdim=True)
 
         # cosine similarity as logits
-        
+
         logits_per_image = logit_scale * image_features @ text_features.t()
         probs = logits_per_image.softmax(dim=-1).cpu().detach().numpy()
 
