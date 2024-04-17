@@ -6,7 +6,7 @@ import os
 import time
 import uuid
 
-# todo 输入视频非mp4的格式转换
+# todo 输入视频非mp4的格式转换 原项目还需要升级优化，看README
 VIDEO_PATH = f"{os.getcwd()}/data"
 # 视频存储的路径
 if not os.path.exists(VIDEO_PATH):
