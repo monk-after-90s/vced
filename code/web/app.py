@@ -3,7 +3,6 @@ import streamlit as st
 from jina import Client, DocumentArray, Document
 import json
 import os
-import time
 import uuid
 
 # todo 输入视频非mp4的格式转换 原项目还需要升级优化，看README
@@ -74,7 +73,6 @@ def cutVideo(start_t: str, length: int, input: str, output: str):
 # 与后端交互部分
 def search_clip(uid, uri, text_prompt, topn_value):
     video = DocumentArray([Document(uri=uri, id=str(uid) + uploaded_file.name)])
-    t1 = time.time()
     c.post('/index', inputs=video)  # 首先将上传的视频进行处理
 
     text = DocumentArray([Document(text=text_prompt)])
